@@ -1,0 +1,143 @@
+// recovery_gps.h — GPS recovery hook (Choi et al. RAID 2020, §4.3)
+//
+// !! STRUCTURAL DEVIATION — MUST BE REPLACED !!
+//
+// This file implements the GPS software sensor using dead-reckoning (velocity
+// integration). This is WRONG per Section 3.2.
+//
+// What the paper actually does at RUNTIME (Section 3.2):
+//   The software sensor for ALL channels — including GPS position — is:
+//     ms = C·x + D·u
+//   from the 12-state model state vector x = [phi, theta, psi, p, q, r,
+//   vN, vE, vD, pN, pE, pD]. The dead-reckoning formula here is only used as
+//   a physics constraint during grey-box PEM system identification (to tie the
+//   kinematic rows of C to the position/velocity states). It is NOT the
+//   runtime software sensor.
+//
+// This file and recovery_baro.h are temporary. They must be SUPERSEDED by adding
+// GPS/baro as channels in the unified recovery_monitor.h Algorithm 1 monitor
+// once the 12-state model is identified (R6: extend quad_template.m with
+// kinematic position/velocity rows, re-run sysid_greybox.m).
+//
+// Until then the detection logic here (dead-reckoning as software sensor) is
+// structurally wrong and deviates from Section 3.2.
+//
+// Original wiring comment retained for reference:
+//   File to patch: libraries/AP_GPS/AP_GPS.cpp, function AP_GPS::update()
+//   recovery_gps_predict(&g_gps_recovery, vel_N, vel_E, dt);  // WRONG — should be C·x + D·u
+//   recovery_monitor_gps(...);
+//
+// Paper §4.3 GPS spoofing scenarios (for context):
+//   1. Sudden 20 m offset attack — GPS jumps; software sensor does not.
+//   2. Stealthy carry-off — GPS drifts slowly at ~0.5 m/s.
+
+#pragma once
+#include <cmath>
+#include <cstring>
+
+// GPS recovery thresholds (per DTW analysis — BARO channel values reused here)
+// Retune with select_parameters.py GPS_Lat/GPS_Lng channel output.
+#ifndef GPS_RECOVERY_WINDOW
+#define GPS_RECOVERY_WINDOW  248       // N for GPS_Lat channel from DTW
+#endif
+#ifndef GPS_T_ON
+#define GPS_T_ON   5069.80f
+#endif
+#ifndef GPS_T_OFF
+#define GPS_T_OFF  4005.14f
+#endif
+
+// 1 degree latitude ≈ 111,000 m; convert metres error to degree residual
+#define GPS_M_PER_DEG_LAT  111000.0f
+
+struct RecoveryGPSState {
+    float dr_lat;            // dead-reckoning latitude estimate (degrees)
+    float dr_lng;            // dead-reckoning longitude estimate (degrees)
+    float r_lat;             // accumulated residual (latitude channel)
+    float r_lng;
+    float e_lat;             // disturbance estimate
+    float e_lng;
+    float err_history_lat[GPS_RECOVERY_WINDOW];
+    float err_history_lng[GPS_RECOVERY_WINDOW];
+    int   t;
+    bool  recovery_mode;
+    int   safe_count;
+    bool  initialized;
+};
+
+// Call once per GPS update to propagate dead-reckoning position.
+// vel_north_ms, vel_east_ms: NED velocity (m/s); dt: seconds since last update.
+static inline void recovery_gps_predict(RecoveryGPSState* s,
+                                         float vel_north_ms,
+                                         float vel_east_ms,
+                                         float dt) {
+    // Convert m/s to deg/s using approximate local scale
+    float dlat = (vel_north_ms * dt) / GPS_M_PER_DEG_LAT;
+    float dlng = (vel_east_ms  * dt) / (GPS_M_PER_DEG_LAT * cosf(s->dr_lat * (float)(M_PI/180.0)));
+    s->dr_lat += dlat;
+    s->dr_lng += dlng;
+}
+
+// Monitor GPS lat/lng: detect attack, substitute DR position if needed.
+// lat_meas/lng_meas: reported GPS position (degrees, may be spoofed)
+// lat_dr/lng_dr:     dead-reckoning estimate
+// lat_out/lng_out:   position to pass to flight controller
+static inline void recovery_monitor_gps(RecoveryGPSState* s,
+                                         float lat_meas, float lng_meas,
+                                         float lat_dr,   float lng_dr,
+                                         float* lat_out, float* lng_out) {
+    // Window boundary
+    if (s->t >= GPS_RECOVERY_WINDOW) {
+        s->t = 0;
+        if (!s->recovery_mode) {
+            float sum_lat = 0.0f, sum_lng = 0.0f;
+            for (int k = 0; k < GPS_RECOVERY_WINDOW; k++) {
+                sum_lat += s->err_history_lat[k];
+                sum_lng += s->err_history_lng[k];
+            }
+            s->e_lat = sum_lat / (float)GPS_RECOVERY_WINDOW;
+            s->e_lng = sum_lng / (float)GPS_RECOVERY_WINDOW;
+        }
+        s->r_lat = 0.0f;
+        s->r_lng = 0.0f;
+        memset(s->err_history_lat, 0, sizeof(s->err_history_lat));
+        memset(s->err_history_lng, 0, sizeof(s->err_history_lng));
+    }
+
+    float pred_lat = lat_dr - s->e_lat;
+    float pred_lng = lng_dr - s->e_lng;
+
+    float diff_lat = fabsf(lat_meas - pred_lat) * GPS_M_PER_DEG_LAT; // convert to metres
+    float diff_lng = fabsf(lng_meas - pred_lng) * GPS_M_PER_DEG_LAT;
+    s->r_lat += diff_lat;
+    s->r_lng += diff_lng;
+
+    if (s->t < GPS_RECOVERY_WINDOW) {
+        s->err_history_lat[s->t] = lat_meas - pred_lat;
+        s->err_history_lng[s->t] = lng_meas - pred_lng;
+    }
+    s->t++;
+
+    // Attack detected on either axis
+    if (s->r_lat > GPS_T_ON || s->r_lng > GPS_T_ON) {
+        s->recovery_mode = true;
+        s->safe_count    = 0;
+    }
+
+    if (s->recovery_mode) {
+        float max_r = (s->r_lat > s->r_lng) ? s->r_lat : s->r_lng;
+        if (max_r < GPS_T_OFF) {
+            s->safe_count++;
+            if (s->safe_count >= 10)
+                s->recovery_mode = false;
+        } else {
+            s->safe_count = 0;
+        }
+        *lat_out = pred_lat;
+        *lng_out = pred_lng;
+        return;
+    }
+
+    *lat_out = lat_meas;
+    *lng_out = lng_meas;
+}

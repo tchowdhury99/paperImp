@@ -1,0 +1,102 @@
+// recovery_baro.h — Barometer recovery hook (Choi et al. RAID 2020, §3.2 Eq. 5)
+//
+// !! STRUCTURAL DEVIATION — MUST BE REPLACED !!
+//
+// This file implements the barometer software sensor using the standalone physics
+// formula (Eq. 5: barometric pressure model). This is WRONG per Section 3.2.
+//
+// What the paper actually does at RUNTIME (Section 3.2):
+//   The software sensor for ALL channels — including baro and GPS — is:
+//     ms = C·x + D·u
+//   computed from the 12-state model state vector x = [phi, theta, psi, p, q, r,
+//   vN, vE, vD, pN, pE, pD]. The standalone physics formulas (Eq. 5 for baro,
+//   dead-reckoning for GPS) are ONLY constraints used during grey-box PEM system
+//   identification to keep the matrices physically meaningful. They are NOT the
+//   runtime software sensor.
+//
+// This file and recovery_gps.h are temporary. They must be SUPERSEDED by adding
+// baro/GPS as channels in the unified recovery_monitor.h Algorithm 1 monitor
+// once the 12-state model is identified (R6: extend quad_template.m with
+// kinematic position/velocity rows, re-run sysid_greybox.m).
+//
+// Until then the detection logic here (standalone Eq. 5) is structurally wrong
+// and will produce incorrect residuals for baro channel.
+//
+// Original wiring comment retained for reference:
+//   File to patch: libraries/AP_Baro/AP_Baro.cpp, function AP_Baro::update()
+//   float alt_m = get_altitude();
+//   float press_expected = software_baro(alt_m);   // WRONG — should be C·x + D·u
+//   float press_out = recovery_monitor_baro(&g_baro_recovery, press_measured, press_expected);
+//
+// Paper §3.2, Eq. 5 (barometric pressure model — for sysid constraint only):
+//   P_h = P_0 * exp(−g_0 * M * (h − h_0) / (R * T_0))
+
+#pragma once
+#include <cmath>
+#include <cstring>
+#include "software_sensors.h"
+
+// Use same window/threshold as gyro recovery (per-sensor thresholds from DTW)
+// These values are placeholders — re-run select_parameters.py for BARO channel
+#ifndef BARO_RECOVERY_WINDOW
+#define BARO_RECOVERY_WINDOW  2041      // N for BARO_Alt channel from DTW
+#endif
+#ifndef BARO_T_ON
+#define BARO_T_ON   1204.61f
+#endif
+#ifndef BARO_T_OFF
+#define BARO_T_OFF   951.64f            // T_off = T_on * 0.79
+#endif
+
+struct RecoveryBaroState {
+    float r;                           // cumulative residual accumulator
+    float e;                           // disturbance estimate
+    float err_history[BARO_RECOVERY_WINDOW];
+    int   t;                           // window step counter
+    bool  recovery_mode;
+    int   safe_count;
+};
+
+// Algorithm 1 applied to barometer channel.
+// press_measured: raw barometer pressure (Pa) — may be attack-corrupted
+// press_expected: software_baro(altitude_m) — physics prediction (Eq. 5)
+// Returns: pressure to use (real or software-sensor substitute)
+static inline float recovery_monitor_baro(RecoveryBaroState* s,
+                                           float press_measured,
+                                           float press_expected) {
+    // Window boundary: update disturbance, reset accumulator (§3.3)
+    if (s->t >= BARO_RECOVERY_WINDOW) {
+        s->t = 0;
+        if (!s->recovery_mode) {
+            float sum = 0.0f;
+            for (int k = 0; k < BARO_RECOVERY_WINDOW; k++) sum += s->err_history[k];
+            s->e = sum / (float)BARO_RECOVERY_WINDOW;
+        }
+        s->r = 0.0f;
+        memset(s->err_history, 0, sizeof(s->err_history));
+    }
+
+    float ms   = press_expected - s->e;                // disturbance-compensated prediction
+    float diff = fabsf(press_measured - ms);
+    s->r += diff;
+    if (s->t < BARO_RECOVERY_WINDOW)
+        s->err_history[s->t] = press_measured - ms;
+    s->t++;
+
+    if (s->r > BARO_T_ON) {
+        s->recovery_mode = true;
+        s->safe_count    = 0;
+    }
+
+    if (s->recovery_mode) {
+        if (s->r < BARO_T_OFF) {
+            s->safe_count++;
+            if (s->safe_count >= 10)
+                s->recovery_mode = false;
+        } else {
+            s->safe_count = 0;
+        }
+        return ms;
+    }
+    return press_measured;
+}

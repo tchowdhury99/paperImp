@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+logs/
+*.log
+
+# Data/output files that may be large
+*.BIN
+*.tlog
+*.ulg
+*.bag
+*.db3
+
+# Build/cache
+build/
+dist/
+.cache/
+tmp/
+temp/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Archives
+*.tar
+*.tar.gz
+*.zip
+*.7z
+data/operation_data.mat

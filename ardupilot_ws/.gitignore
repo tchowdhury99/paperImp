@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Build outputs
+build/
+*.o
+*.so
+*.a
+*.elf
+*.bin
+*.hex
+
+# ArduPilot / waf
+.waf-*/
+.lock-waf*
+c4che/
+apm.pdef.xml
+
+# Logs and generated files
+logs/
+*.log
+*.BIN
+*.tlog
+*.ulg
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Large archives
+*.tar
+*.tar.gz
+*.zip
+*.7z
