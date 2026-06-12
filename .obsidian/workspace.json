@@ -1,0 +1,259 @@
+{
+  "main": {
+    "id": "88ef0b9f6a01f6fe",
+    "type": "split",
+    "children": [
+      {
+        "id": "0cfeb14e35e40321",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6409e7f9721c331f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "EXECUTION_PLAN.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "EXECUTION_PLAN"
+            }
+          },
+          {
+            "id": "100af15faef39b44",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "REPLICATION_REPORT.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "REPLICATION_REPORT"
+            }
+          },
+          {
+            "id": "0dede4ee90c59ade",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "PAPER_COMPARISON_CHECKLIST.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "PAPER_COMPARISON_CHECKLIST"
+            }
+          },
+          {
+            "id": "a3127e55f770b061",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "FINAL_REPORT.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "FINAL_REPORT"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "4bd6b80a4bc896e6",
+    "type": "split",
+    "children": [
+      {
+        "id": "d46c1812b956d5c0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ed0c66e89ed06cd2",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "53ab3d97851f8fc8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "fcc9fe757a99fc4e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "bf1854f44d5010a1",
+    "type": "split",
+    "children": [
+      {
+        "id": "39185c83991bb9ff",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "77d81478ee5cc071",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "EXECUTION_PLAN.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for EXECUTION_PLAN"
+            }
+          },
+          {
+            "id": "fa2ba07901212de2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "EXECUTION_PLAN.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from EXECUTION_PLAN"
+            }
+          },
+          {
+            "id": "9840ba1c2d7f4afa",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "8a448b40290b95ff",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "74faa06983499980",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "EXECUTION_PLAN.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of EXECUTION_PLAN"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "a3127e55f770b061",
+  "lastOpenFiles": [
+    "rv_recovery/figures/figD6_segment_durations.png",
+    "rv_recovery/figures/figD5_command_tracking.png",
+    "rv_recovery/figures/figD4_extra_sensors.png",
+    "rv_recovery/figures/figD3_state_coverage_hist.png",
+    "rv_recovery/figures/figD2_input_commands.png",
+    "rv_recovery/figures/figD1_flight_paths.png",
+    "rv_recovery/python/make_figures_data.py",
+    "rv_recovery/python/make_figures_data.py.tmp.839803.4f7daa9a3c28",
+    "PAPER_COMPARISON_CHECKLIST.md",
+    "FINAL_REPORT.md",
+    "FINAL_REPORT.md.tmp.839803.a1a5344f2bc9",
+    "rv_recovery/python/make_presentation.py.tmp.839803.8d052e9abd77",
+    "rv_recovery/python/make_presentation.py.tmp.839803.4527fcbbce83",
+    "rv_recovery/python/make_presentation.py.tmp.839803.438e121f6b82",
+    "Replication_Presentation.pptx",
+    "rv_recovery/python/make_presentation.py",
+    "rv_recovery/python/make_presentation.py.tmp.839803.72d12cd74979",
+    "REPLICATION_REPORT.md",
+    "PAPER_COMPARISON_CHECKLIST.md.tmp.839803.c13402ef589c",
+    "rv_recovery/figures/fig15_allgyro_compensation.png",
+    "rv_recovery/figures/fig14_param_selection_windows.png",
+    "rv_recovery/figures/fig13_external_wind_correction.png",
+    "rv_recovery/figures/fig12_roll_drift_correction.png",
+    "rv_recovery/figures/fig11_error_vs_attack_scale.png",
+    "EXECUTION_PLAN.md",
+    "paper.md"
+  ]
+}
