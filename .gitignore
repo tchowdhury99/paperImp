@@ -1,0 +1,6 @@
+
+# Large data/log files excluded from normal GitHub push
+rv_recovery/data/operation_data.mat
+ardupilot_ws/arducopter-3.4/copter346_test/logs/
+*.tlog
+*.tlog.raw

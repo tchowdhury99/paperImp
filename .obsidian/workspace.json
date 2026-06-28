@@ -4,67 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "0cfeb14e35e40321",
+        "id": "97cc9ddb6a4005c8",
         "type": "tabs",
         "children": [
           {
-            "id": "6409e7f9721c331f",
+            "id": "c3558e9d92aa7e9d",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "EXECUTION_PLAN.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "EXECUTION_PLAN"
-            }
-          },
-          {
-            "id": "100af15faef39b44",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "REPLICATION_REPORT.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "REPLICATION_REPORT"
-            }
-          },
-          {
-            "id": "0dede4ee90c59ade",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "PAPER_COMPARISON_CHECKLIST.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "PAPER_COMPARISON_CHECKLIST"
-            }
-          },
-          {
-            "id": "a3127e55f770b061",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "FINAL_REPORT.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "FINAL_REPORT"
+              "title": "New tab"
             }
           }
-        ],
-        "currentTab": 3
+        ]
       }
     ],
     "direction": "vertical"
@@ -77,19 +30,6 @@
         "id": "d46c1812b956d5c0",
         "type": "tabs",
         "children": [
-          {
-            "id": "ed0c66e89ed06cd2",
-            "type": "leaf",
-            "state": {
-              "type": "file-explorer",
-              "state": {
-                "sortOrder": "alphabetical",
-                "autoReveal": false
-              },
-              "icon": "lucide-folder-closed",
-              "title": "Files"
-            }
-          },
           {
             "id": "53ab3d97851f8fc8",
             "type": "leaf",
@@ -116,13 +56,25 @@
               "icon": "lucide-bookmark",
               "title": "Bookmarks"
             }
+          },
+          {
+            "id": "76d153c9471c4d63",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "bf1854f44d5010a1",
@@ -227,8 +179,13 @@
       "bases:Create new base": false
     }
   },
-  "active": "a3127e55f770b061",
+  "active": "c3558e9d92aa7e9d",
   "lastOpenFiles": [
+    "Untitled.md",
+    "EXECUTION_PLAN.md",
+    "REPLICATION_REPORT.md",
+    "PAPER_COMPARISON_CHECKLIST.md",
+    "FINAL_REPORT.md",
     "rv_recovery/figures/figD6_segment_durations.png",
     "rv_recovery/figures/figD5_command_tracking.png",
     "rv_recovery/figures/figD4_extra_sensors.png",
@@ -237,8 +194,6 @@
     "rv_recovery/figures/figD1_flight_paths.png",
     "rv_recovery/python/make_figures_data.py",
     "rv_recovery/python/make_figures_data.py.tmp.839803.4f7daa9a3c28",
-    "PAPER_COMPARISON_CHECKLIST.md",
-    "FINAL_REPORT.md",
     "FINAL_REPORT.md.tmp.839803.a1a5344f2bc9",
     "rv_recovery/python/make_presentation.py.tmp.839803.8d052e9abd77",
     "rv_recovery/python/make_presentation.py.tmp.839803.4527fcbbce83",
@@ -246,14 +201,11 @@
     "Replication_Presentation.pptx",
     "rv_recovery/python/make_presentation.py",
     "rv_recovery/python/make_presentation.py.tmp.839803.72d12cd74979",
-    "REPLICATION_REPORT.md",
     "PAPER_COMPARISON_CHECKLIST.md.tmp.839803.c13402ef589c",
     "rv_recovery/figures/fig15_allgyro_compensation.png",
     "rv_recovery/figures/fig14_param_selection_windows.png",
     "rv_recovery/figures/fig13_external_wind_correction.png",
     "rv_recovery/figures/fig12_roll_drift_correction.png",
-    "rv_recovery/figures/fig11_error_vs_attack_scale.png",
-    "EXECUTION_PLAN.md",
     "paper.md"
   ]
 }
