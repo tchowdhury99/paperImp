@@ -7,6 +7,8 @@ Interpreter: /home/tchowdh4/.pyenv/versions/3.10.14/bin/python3
 import scipy.io
 import numpy as np
 import rtamt
+import matplotlib
+matplotlib.use('Agg')   # headless-safe: avoid blocking # plt.show() removed: blocks on headless machines. Plot is saved to PNG above. on machines without a display
 import matplotlib.pyplot as plt
 
 # ── 1. Load dataset ──────────────────────────────────────────────────────────
@@ -147,4 +149,4 @@ plt.savefig('/home/tchowdh4/paperImp/stl_result_baro.png', dpi=130)
 
 print("Saved: /home/tchowdh4/paperImp/stl_result_baro.png")
 
-plt.show()
+# plt.show() removed: blocks on headless machines. Plot is saved to PNG above.

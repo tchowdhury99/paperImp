@@ -18,6 +18,8 @@ Dataset:
 import numpy as np
 import scipy.io
 import rtamt
+import matplotlib
+matplotlib.use('Agg')   # headless-safe: avoid blocking # plt.show() removed: blocks on headless machines. Plot is saved to PNG above. on machines without a display
 import matplotlib.pyplot as plt
 
 
@@ -209,4 +211,4 @@ plt.tight_layout()
 plt.savefig(OUTPUT_PLOT, dpi=130)
 
 print(f"Saved: {OUTPUT_PLOT}")
-plt.show()
+# plt.show() removed: blocks on headless machines. Plot is saved to PNG above.
