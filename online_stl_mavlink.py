@@ -80,6 +80,7 @@ def main():
     ap.add_argument('--conn', default='udpin:127.0.0.1:14570')
     ap.add_argument('--plot', default='/home/tchowdh4/paperImp/stl_result_online_mavlink.png')
     ap.add_argument('--max_idle', type=float, default=5.0, help='seconds of silence before stop')
+    ap.add_argument('--label', default='', help='case label shown in the figure title (e.g. "baro spoof")')
     args = ap.parse_args()
 
     mdl = scipy.io.loadmat(MDL)
@@ -222,7 +223,8 @@ def main():
         ax[3].plot(T, RECP.astype(int) * 1.05, label='P recovery mode', color='blue', alpha=.6)
         ax[3].set_ylabel('recovery on/off'); ax[3].set_xlabel('Time (s)')
         ax[3].legend(fontsize=8); ax[3].grid(alpha=.3)
-        plt.suptitle('Online STL over MAVLink + closed-loop recovery\n'
+        _case = f' — {args.label}' if args.label else ''
+        plt.suptitle(f'ONLINE (real-time MAVLink) STL + closed-loop recovery{_case}\n'
                      'phi = G (resid < eps); rho<0 -> m<-ms; back after K safe', fontsize=10)
         plt.tight_layout()
         plt.savefig(args.plot, dpi=130)

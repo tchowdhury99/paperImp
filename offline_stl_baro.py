@@ -156,7 +156,7 @@ axes[2].set_xlabel('Time (s)')
 axes[2].legend(fontsize=8)
 axes[2].grid(alpha=0.3)
 
-plt.suptitle('STL Robustness — Barometer Attack Detection\n'
+plt.suptitle('OFFLINE STL — Barometer Attack Detection (recorded 50 Hz dataset)\n'
              f'Spec: {spec.spec}', fontsize=10)
 
 plt.tight_layout()

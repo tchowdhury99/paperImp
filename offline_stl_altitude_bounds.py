@@ -193,7 +193,7 @@ def main():
     axes[2].grid(alpha=0.3)
 
     plt.suptitle(
-        "STL Robustness — Altitude Bounds / Mission Spec S3-S4 equivalent\n"
+        "OFFLINE STL — Altitude Bounds / Mission Spec S3-S4 (recorded 50 Hz dataset)\n"
         f"Spec: {STL_FORMULA}",
         fontsize=10,
     )

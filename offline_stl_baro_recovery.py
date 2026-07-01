@@ -201,7 +201,7 @@ def main():
     axes[0].plot(t_sec, BARO_Alt_attacked, label="BARO_Alt attacked", linestyle="--", alpha=0.8)
     axes[0].axvspan(attack_start_sec, attack_end_sec, alpha=0.15, label="attack window")
     axes[0].set_ylabel("Altitude (m AGL)")
-    axes[0].set_title("Barometer Recovery Within 10 s — Signals")
+    axes[0].set_title("OFFLINE STL — Barometer Recovery Within 10 s (recorded 50 Hz dataset)")
     axes[0].legend(fontsize=8)
     axes[0].grid(alpha=0.3)
 

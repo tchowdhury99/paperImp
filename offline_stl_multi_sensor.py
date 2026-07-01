@@ -282,7 +282,7 @@ plt.axhline(H_MIN, linestyle="--", linewidth=1.0)
 plt.axhline(H_MAX, linestyle="--", linewidth=1.0)
 plt.axvspan(ATTACK_START_TIME, ATTACK_END_TIME, alpha=0.2)
 plt.ylabel("alt (m)")
-plt.title("Multi-Sensor Compound STL Inputs and Robustness")
+plt.title("OFFLINE STL — Multi-Sensor Compound (recorded 50 Hz dataset)")
 
 plt.subplot(5, 1, 2)
 plt.plot(t, baro_residual, linewidth=1.0)

@@ -217,7 +217,7 @@ axes[2].legend(fontsize=8)
 axes[2].grid(alpha=0.3)
 
 plt.suptitle(
-    "STL Robustness — GPS Position Attack Detection\n"
+    "OFFLINE STL — GPS Position Attack Detection (recorded 50 Hz dataset)\n"
     f"Spec: {spec.spec}",
     fontsize=10
 )

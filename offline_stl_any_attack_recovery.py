@@ -284,7 +284,7 @@ def main():
     axes[3].grid(alpha=0.3)
 
     plt.suptitle(
-        "STL Robustness — Multi-Sensor Any-Attack Recovery\n"
+        "OFFLINE STL — Multi-Sensor Any-Attack Recovery (recorded 50 Hz dataset)\n"
         f"Spec: {STL_FORMULA}",
         fontsize=10,
     )

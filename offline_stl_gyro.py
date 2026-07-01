@@ -274,7 +274,7 @@ axes[2].legend(fontsize=8)
 axes[2].grid(alpha=0.3)
 
 plt.suptitle(
-    "STL Robustness — Gyroscope Rate Attack Detection\n"
+    "OFFLINE STL — Gyroscope Rate Attack Detection (recorded 50 Hz dataset)\n"
     "Spec: G[0:580ms] "
     "(gyro_residual_x < 0.15 and gyro_residual_y < 0.15 and gyro_residual_z < 0.15)",
     fontsize=10,

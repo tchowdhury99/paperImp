@@ -138,7 +138,7 @@ def main():
     plt.plot(t, baro_alt_attacked, label="BARO_Alt attacked")
     plt.axvspan(ATTACK_START * TS, ATTACK_END * TS, alpha=0.2, label="attack window")
     plt.ylabel("Altitude (m)")
-    plt.title("Persistent Barometer Attack Pattern")
+    plt.title("OFFLINE STL — Persistent Barometer Attack Pattern (recorded 50 Hz dataset)")
     plt.grid(True)
     plt.legend(loc="best")
 
