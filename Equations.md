@@ -191,23 +191,13 @@ $$
 For the AND operator, STL uses the weaker condition:
 
 $$
-\rho_{\mathrm{total}}
-=
-\min
-\left(
-\rho_{\mathrm{N}},
-\rho_{\mathrm{E}}
-\right)
+\rho_{\mathrm{total}} =
+\min\left(\rho_{\mathrm{N}}, \rho_{\mathrm{E}}\right)
 $$
 
 $$
-\rho_{\mathrm{total}}
-=
-\min
-\left(
--0.030651,
-+0.089349
-\right)
+\rho_{\mathrm{total}} =
+\min\left(-0.030651, +0.089349\right)
 $$
 
 $$
