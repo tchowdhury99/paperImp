@@ -191,7 +191,8 @@ $$
 For the AND operator, STL uses the weaker condition:
 
 $$
-\rho_{\mathrm{total}} =
+\rho_{\mathrm{total}}
+=
 \min
 \left(
 \rho_{\mathrm{north}},
@@ -200,7 +201,8 @@ $$
 $$
 
 $$
-\rho_{\mathrm{total}} =
+\rho_{\mathrm{total}}
+=
 \min
 \left(
 -0.030651,
