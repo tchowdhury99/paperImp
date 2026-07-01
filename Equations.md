@@ -81,3 +81,136 @@ $$
 $$
 
 So STL reports an attack/violation.
+## Formula 2 — GPS Integrity
+
+**Script:** `offline_stl_gps.py`  
+**Plot:** `stl_result_gps.png`
+
+### Formula
+
+$$
+G_{[0,580\,\mathrm{ms}]}
+\left(
+\mathrm{gps\_north\_res} < 0.169349
+\;\land\;
+\mathrm{gps\_east\_res} < 0.169349
+\right)
+$$
+
+### Threshold
+
+$$
+\varepsilon_{\mathrm{gps}} = 0.169349
+$$
+
+### Formula Formation
+
+Start with GPS north safety:
+
+$$
+\mathrm{gps\_north\_error}(t) < \varepsilon_{\mathrm{gps}}
+$$
+
+Substitute the threshold:
+
+$$
+\mathrm{gps\_north\_error}(t) < 0.169349
+$$
+
+For both GPS north and GPS east residuals, the STL formula becomes:
+
+$$
+G_{[0,580\,\mathrm{ms}]}
+\left(
+\mathrm{gps\_north\_res} < 0.169349
+\;\land\;
+\mathrm{gps\_east\_res} < 0.169349
+\right)
+$$
+
+### Example
+
+Suppose:
+
+$$
+\mathrm{gps\_north\_error} = 0.05
+$$
+
+$$
+\mathrm{gps\_east\_error} = 0.08
+$$
+
+Both are below the threshold:
+
+$$
+0.05 < 0.169349
+$$
+
+$$
+0.08 < 0.169349
+$$
+
+So the GPS formula is satisfied.
+
+Now suppose:
+
+$$
+\mathrm{gps\_north\_error} = 0.20
+$$
+
+$$
+\mathrm{gps\_east\_error} = 0.08
+$$
+
+North violates the threshold:
+
+$$
+0.20 > 0.169349
+$$
+
+Robustness for north:
+
+$$
+\rho_{\mathrm{north}} = 0.169349 - 0.20
+$$
+
+$$
+\rho_{\mathrm{north}} = -0.030651
+$$
+
+East is safe:
+
+$$
+\rho_{\mathrm{east}} = 0.169349 - 0.08
+$$
+
+$$
+\rho_{\mathrm{east}} = +0.089349
+$$
+
+For the AND operator, STL uses the weaker condition:
+
+$$
+\rho_{\mathrm{total}} =
+\min
+\left(
+\rho_{\mathrm{north}},
+\rho_{\mathrm{east}}
+\right)
+$$
+
+$$
+\rho_{\mathrm{total}} =
+\min
+\left(
+-0.030651,
++0.089349
+\right)
+$$
+
+$$
+\rho_{\mathrm{total}} = -0.030651
+$$
+
+So the full GPS formula is violated.
+
