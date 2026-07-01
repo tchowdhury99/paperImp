@@ -81,6 +81,8 @@ $$
 $$
 
 So STL reports an attack/violation.
+
+
 ## Formula 2 — GPS Integrity
 
 **Script:** `offline_stl_gps.py`  
@@ -213,181 +215,84 @@ So the full GPS formula is violated.
 
 ### Formula
 
-$$
-G_{[0,580\,\mathrm{ms}]}
-\left(
-e_{\mathrm{gyr},x} < 0.15
-\;\land\;
-e_{\mathrm{gyr},y} < 0.15
-\;\land\;
-e_{\mathrm{gyr},z} < 0.15
-\right)
-$$
+$$G_{[0,580\,\mathrm{ms}]}\left(e_{\mathrm{gyr},x}<0.15 \land e_{\mathrm{gyr},y}<0.15 \land e_{\mathrm{gyr},z}<0.15\right)$$
 
 ### Correct Residual Formation
 
-$$
-e_{\mathrm{gyr},x}(t)
-=
-\left|
-m_{\mathrm{gyr},x}(t)
--
-m_{s,\mathrm{gyr},x}(t)
-\right|
-$$
+$$e_{\mathrm{gyr},x}(t)=\left|m_{\mathrm{gyr},x}(t)-m_{s,\mathrm{gyr},x}(t)\right|$$
 
-$$
-e_{\mathrm{gyr},y}(t)
-=
-\left|
-m_{\mathrm{gyr},y}(t)
--
-m_{s,\mathrm{gyr},y}(t)
-\right|
-$$
+$$e_{\mathrm{gyr},y}(t)=\left|m_{\mathrm{gyr},y}(t)-m_{s,\mathrm{gyr},y}(t)\right|$$
 
-$$
-e_{\mathrm{gyr},z}(t)
-=
-\left|
-m_{\mathrm{gyr},z}(t)
--
-m_{s,\mathrm{gyr},z}(t)
-\right|
-$$
+$$e_{\mathrm{gyr},z}(t)=\left|m_{\mathrm{gyr},z}(t)-m_{s,\mathrm{gyr},z}(t)\right|$$
 
 ### Threshold
 
-$$
-\varepsilon_{\mathrm{gyr}} = 0.15\,\mathrm{rad/s}
-$$
+$$\varepsilon_{\mathrm{gyr}}=0.15\,\mathrm{rad/s}$$
 
 ### Formula Formation
 
 For each axis:
 
-$$
-e_{\mathrm{gyr},x}(t) < \varepsilon_{\mathrm{gyr}}
-$$
+$$e_{\mathrm{gyr},x}(t)<\varepsilon_{\mathrm{gyr}}$$
 
-$$
-e_{\mathrm{gyr},y}(t) < \varepsilon_{\mathrm{gyr}}
-$$
+$$e_{\mathrm{gyr},y}(t)<\varepsilon_{\mathrm{gyr}}$$
 
-$$
-e_{\mathrm{gyr},z}(t) < \varepsilon_{\mathrm{gyr}}
-$$
+$$e_{\mathrm{gyr},z}(t)<\varepsilon_{\mathrm{gyr}}$$
 
 Substitute the threshold:
 
-$$
-e_{\mathrm{gyr},x}(t) < 0.15
-$$
+$$e_{\mathrm{gyr},x}(t)<0.15$$
 
-$$
-e_{\mathrm{gyr},y}(t) < 0.15
-$$
+$$e_{\mathrm{gyr},y}(t)<0.15$$
 
-$$
-e_{\mathrm{gyr},z}(t) < 0.15
-$$
+$$e_{\mathrm{gyr},z}(t)<0.15$$
 
 All three axes must be safe:
 
-$$
-e_{\mathrm{gyr},x} < 0.15
-\;\land\;
-e_{\mathrm{gyr},y} < 0.15
-\;\land\;
-e_{\mathrm{gyr},z} < 0.15
-$$
+$$e_{\mathrm{gyr},x}<0.15 \land e_{\mathrm{gyr},y}<0.15 \land e_{\mathrm{gyr},z}<0.15$$
 
 Then add the STL global operator:
 
-$$
-G_{[0,580\,\mathrm{ms}]}
-\left(
-e_{\mathrm{gyr},x} < 0.15
-\;\land\;
-e_{\mathrm{gyr},y} < 0.15
-\;\land\;
-e_{\mathrm{gyr},z} < 0.15
-\right)
-$$
+$$G_{[0,580\,\mathrm{ms}]}\left(e_{\mathrm{gyr},x}<0.15 \land e_{\mathrm{gyr},y}<0.15 \land e_{\mathrm{gyr},z}<0.15\right)$$
 
 ### Example
 
 Suppose:
 
-$$
-m_{s,\mathrm{gyr},x} = 0.05\,\mathrm{rad/s}
-$$
+$$m_{s,\mathrm{gyr},x}=0.05\,\mathrm{rad/s}$$
 
-$$
-m_{\mathrm{gyr},x} = 0.80\,\mathrm{rad/s}
-$$
+$$m_{\mathrm{gyr},x}=0.80\,\mathrm{rad/s}$$
 
 Then:
 
-$$
-e_{\mathrm{gyr},x}
-=
-\left|
-0.80 - 0.05
-\right|
-=
-0.75\,\mathrm{rad/s}
-$$
+$$e_{\mathrm{gyr},x}=\left|0.80-0.05\right|=0.75\,\mathrm{rad/s}$$
 
 Compare:
 
-$$
-0.75 > 0.15
-$$
+$$0.75>0.15$$
 
 So this is a violation.
 
 Robustness:
 
-$$
-\rho_x = 0.15 - 0.75 = -0.60
-$$
+$$\rho_x=0.15-0.75=-0.60$$
 
 If:
 
-$$
-e_{\mathrm{gyr},y} = 0.02
-$$
+$$e_{\mathrm{gyr},y}=0.02$$
 
-$$
-e_{\mathrm{gyr},z} = 0.01
-$$
+$$e_{\mathrm{gyr},z}=0.01$$
 
 then:
 
-$$
-\rho_y = 0.15 - 0.02 = +0.13
-$$
+$$\rho_y=0.15-0.02=+0.13$$
 
-$$
-\rho_z = 0.15 - 0.01 = +0.14
-$$
+$$\rho_z=0.15-0.01=+0.14$$
 
 For the AND operator:
 
-$$
-\rho_{\mathrm{total}}
-=
-\min
-\left(
--0.60,
-+0.13,
-+0.14
-\right)
-$$
+$$\rho_{\mathrm{total}}=\min(-0.60,+0.13,+0.14)$$
 
-$$
-\rho_{\mathrm{total}} = -0.60
-$$
+$$\rho_{\mathrm{total}}=-0.60$$
 
 So the gyroscope formula is violated because the X-axis is attacked.
