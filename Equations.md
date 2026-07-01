@@ -305,3 +305,20 @@ So the gyroscope formula is violated because the X-axis is attacked.
 ### Formula
 
 $$G_{[0,580\,\mathrm{ms}]}\left(h>0.97 \land h<29.70 \land e_{\mathrm{baro}}<0.30 \land e_{\mathrm{GPS,N}}<0.169349 \land e_{\mathrm{GPS,E}}<0.169349 \land e_{\mathrm{gyr},x}<0.15 \land e_{\mathrm{gyr},y}<0.15 \land e_{\mathrm{gyr},z}<0.15\right)$$
+
+## Formula 5 — Persistent Barometer Attack Pattern
+
+**Script:** `offline_stl_baro_persistent.py`  
+**Plot:** `stl_result_baro_persistent.png`
+
+### Formula
+
+$$G_{[0,580\,\mathrm{ms}]}\left(G_{[0,1000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)\right)$$
+
+### Purpose
+
+This detects whether the barometer residual remains safe over a longer temporal pattern, not just at one instant.
+
+### Full Formula
+
+$$G_{[0,580\,\mathrm{ms}]}\left(G_{[0,1000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)\right)$$
