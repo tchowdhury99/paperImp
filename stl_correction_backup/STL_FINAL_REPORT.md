@@ -7,57 +7,6 @@ Report purpose: summarize what has been done, where every file is located, why e
 
 ---
 
-## 0. Paper-aligned residual definition (correction — read first)
-
-> This section was added by the paper-alignment correction (see
-> `STL_PAPER_ALIGNMENT_CORRECTION_REPORT.md`). It governs **every** residual
-> equation in this report. Where older text wrote a residual as
-> `|SENSOR_attacked(t) − prediction(t)|`, that was a naming mistake: the
-> `_attacked` symbol is **not** a theoretical residual variable — it is only an
-> offline attack-simulation of the physical measurement `m_sensor`.
-
-**A. Paper-level residual (Choi et al., Algorithm 1 — Runtime Recovery Monitoring):**
-
-```text
-e_sensor(t) = | m_sensor(t) − ms_sensor(t) |
-
-m_sensor(t)  = actual physical sensor measurement received by the monitor
-ms_sensor(t) = software-sensor / model prediction
-```
-
-Paper accumulated (windowed) residual actually used by Algorithm 1:
-
-```text
-r ← r + | m_sensor − ms_sensor |
-R_sensor,N(t) = Σ (i = t−N+1 … t) | m_sensor(i) − ms_sensor(i) |
-```
-
-**B. Dataset approximation used here:**
-
-```text
-barometer :  m_baro   = BARO_Alt (EXTRA[:,1])   ms_baro   = alt (Y[:,2])
-GPS       :  m_gps_*  = GPS pos from Lat/Lng     ms_gps_*  = model pN/pE (Y[:,0:2])
-gyroscope :  m_gyr_*  = measured p/q/r           ms_gyr_*  = model rate state (Y[:,9:12])
-```
-
-**C. Offline attack simulation only:**
-
-```text
-During normal time:  m_sensor(t) = clean physical measurement.
-During the attack window (samples 2000:2500 = 40–50 s):
-    m_sensor(t) is artificially corrupted (e.g. m_baro += 3.0 m).
-The residual formula is ALWAYS e_sensor(t) = |m_sensor(t) − ms_sensor(t)|.
-```
-
-**STL simplification (guide-based, disclosed):** the STL specs below monitor the
-**instantaneous** error `e_sensor(t) = |m − ms|`, not the paper's accumulated
-`R_sensor,N(t)`. This is a simplification mandated by the STL implementation guide
-(`STL_IMPLEMENTATION_GUIDE.md` §5). No STL formula, threshold, window, dataset, or
-attack value was changed by the correction — only the residual variable naming and
-its explanation.
-
----
-
 ## 1. Strict implementation policy followed
 
 The implementation followed the uploaded STL guide first and the Choi et al. software-sensor paper second.
@@ -209,10 +158,9 @@ GyrX_attacked = 0.8 rad/s
 For this STL work, the completed gyroscope construction was:
 
 ```text
-ms_gyr_x(t)    = model roll-rate state (software-sensor prediction) = Y[:, 9]
-m_gyr_x(t)     = physical roll-rate measurement (clean = Y[:, 9]; corrupted in
-                 the attack window as an offline simulation)
-gyro_error_x(t) = | m_gyr_x(t) − ms_gyr_x(t) |          (paper: |m − ms|)
+GyrX_predicted = clean Y[:, 9]
+GyrX_attacked  = attacked copy of Y[:, 9]
+gyro_residual_x(t) = |GyrX_attacked(t) - GyrX_predicted(t)|
 ```
 
 This was kept because it was part of the completed guide-based STL steps for this project.
@@ -249,10 +197,7 @@ EXTRA[:, 1]  = BARO_Alt
 ### Residual equation
 
 ```text
-baro_error(t) = | m_baro(t) − ms_baro(t) |          (paper: e_sensor = |m − ms|)
-
-m_baro(t)  = BARO_Alt (physical measurement; corrupted in the attack window only)
-ms_baro(t) = alt      (software-sensor / model prediction)
+baro_res(t) = |BARO_Alt_attacked(t) - alt(t)|
 ```
 
 ### STL formula
@@ -312,11 +257,9 @@ Detect a GPS position attack using GPS north/east residuals.
 ### Residual equations
 
 ```text
-gps_north_error(t) = | m_gps_north(t) − ms_gps_north(t) |
-gps_east_error(t)  = | m_gps_east(t)  − ms_gps_east(t)  |
+gps_north_residual(t) = |GPS_North_attacked(t) - pN_model(t)|
 
-m_gps_*  = GPS position measurement (east corrupted in the attack window only)
-ms_gps_* = model position pN/pE prediction
+gps_east_residual(t) = |GPS_East_attacked(t) - pE_model(t)|
 ```
 
 ### STL formula
@@ -373,12 +316,17 @@ Y[:, 11]  = GyrZ / r / yaw rate
 ### Residual equations
 
 ```text
-gyro_error_x(t) = | m_gyr_x(t) − ms_gyr_x(t) |
-gyro_error_y(t) = | m_gyr_y(t) − ms_gyr_y(t) |
-gyro_error_z(t) = | m_gyr_z(t) − ms_gyr_z(t) |
+gyro_residual_x(t) = |GyrX_attacked(t) - GyrX_predicted(t)|
 
-m_gyr_*  = physical gyro rate measurement (x corrupted in the attack window only)
-ms_gyr_* = model angular-rate state prediction (paper §6.2: m_gyro,s = [p q r])
+gyro_residual_y(t) = |GyrY_attacked/t - GyrY_predicted(t)|
+
+gyro_residual_z(t) = |GyrZ_attacked(t) - GyrZ_predicted(t)|
+```
+
+Correct mathematical intent:
+
+```text
+gyro_residual_y(t) = |GyrY_attacked(t) - GyrY_predicted(t)|
 ```
 
 ### STL formula
@@ -502,10 +450,7 @@ G[0:580ms] (G[0:1000ms] (baro_residual < 0.30))
 ### Residual equation
 
 ```text
-baro_error(t) = | m_baro(t) − ms_baro(t) |          (paper: e_sensor = |m − ms|)
-
-m_baro(t)  = BARO_Alt (physical measurement; corrupted in the attack window only)
-ms_baro(t) = alt      (software-sensor / model prediction)
+baro_residual(t) = |BARO_Alt_attacked(t) - alt(t)|
 ```
 
 ### Attack
@@ -570,10 +515,7 @@ G[0:580ms] (
 ### Residual equation
 
 ```text
-baro_error(t) = | m_baro(t) − ms_baro(t) |          (paper: e_sensor = |m − ms|)
-
-m_baro(t)  = BARO_Alt (physical measurement; corrupted in the attack window only)
-ms_baro(t) = alt      (software-sensor / model prediction)
+baro_residual(t) = |BARO_Alt_attacked(t) - alt(t)|
 ```
 
 ### Attack
@@ -667,11 +609,9 @@ Therefore, GPS, gyro_y, gyro_z, accelerometer, magnetometer, and other signals w
 ### Residual equations
 
 ```text
-baro_error(t)   = | m_baro(t)  − ms_baro(t)  |
-gyro_error_x(t) = | m_gyr_x(t) − ms_gyr_x(t) |
+baro_residual(t) = |BARO_Alt_attacked(t) - alt(t)|
 
-m_baro  = BARO_Alt (corrupted in attack window) ;  ms_baro  = alt
-m_gyr_x = measured roll rate (corrupted in attack window) ; ms_gyr_x = model rate state
+gyro_residual_x(t) = |GyrX_attacked(t) - GyrX_predicted(t)|
 ```
 
 ### Thresholds

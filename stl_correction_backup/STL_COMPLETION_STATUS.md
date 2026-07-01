@@ -20,22 +20,6 @@ Segment used:
 
 `segment 0`
 
-## Residual variable meaning (paper-aligned — correction)
-
-Every residual variable named below (`baro_res`, `gps_north_res`, `gps_east_res`,
-`gyro_residual_x/y/z`, `baro_residual`) denotes the paper's residual
-(Choi et al., Algorithm 1):
-
-```text
-residual_sensor(t) = | m_sensor(t) − ms_sensor(t) |
-  m_sensor  = physical measurement (corrupted only inside the attack window, offline)
-  ms_sensor = software-sensor / model prediction
-```
-
-The STL specs monitor the **instantaneous** `|m − ms|` (a guide-based simplification of
-the paper's accumulated residual `r ← r + |m − ms|`). See
-`STL_PAPER_ALIGNMENT_CORRECTION_REPORT.md` and `STL_FINAL_REPORT.md` §0.
-
 ## Completed STL formulas
 
 1. Barometer Integrity

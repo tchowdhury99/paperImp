@@ -119,22 +119,14 @@ def main():
     alt = Y[:, 2]          # m AGL, model altitude
     BARO_Alt = EXTR[:, 1]  # m AGL, barometer altitude
 
-    # Paper-aligned residual (Choi et al., Algorithm 1): |m_baro - ms_baro|
-    #   m_baro  = physical barometer measurement (dataset: BARO_Alt)
-    #   ms_baro = software-sensor / model prediction (dataset: alt)
-    # STL below uses the INSTANTANEOUS error |m - ms| (guide-based simplification
-    # of the paper's accumulated residual r <- r + |m - ms|).
-    ms_baro      = alt
-    m_baro_clean = BARO_Alt
+    # ── 3. Simulate exact barometer attack ──────────────────────────────────
+    BARO_Alt_attacked = BARO_Alt.copy()
+    BARO_Alt_attacked[ATTACK_START:ATTACK_END] += ATTACK_VALUE_M
 
-    # ── 3. Offline attack simulation ONLY: corrupt physical measurement m_baro ─
-    m_baro = m_baro_clean.copy()
-    m_baro[ATTACK_START:ATTACK_END] += ATTACK_VALUE_M
-    BARO_Alt_attacked = m_baro   # alias kept for downstream references
-
-    # Residual: baro_error(t) = |m_baro(t) - ms_baro(t)|
-    baro_residual_clean = np.abs(m_baro_clean - ms_baro)
-    baro_residual_attacked = np.abs(m_baro - ms_baro)
+    # Exact residual construction:
+    # baro_residual(t) = |BARO_Alt_attacked(t) - alt(t)|
+    baro_residual_clean = np.abs(BARO_Alt - alt)
+    baro_residual_attacked = np.abs(BARO_Alt_attacked - alt)
 
     # ── 4. Time axis ────────────────────────────────────────────────────────
     t_sec = np.arange(N) * Ts

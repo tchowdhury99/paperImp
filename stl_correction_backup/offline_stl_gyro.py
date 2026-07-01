@@ -88,49 +88,34 @@ t_sec = np.arange(N) * Ts
 t_ms = (np.arange(N) * Ts * 1000).astype(int)
 
 
-# ── 5. Software-sensor prediction ms_gyr (paper §6.2: m_gyro,s = [p q r]) ─────
-# Paper-aligned residual:  gyro_error_j(t) = |m_gyr_j(t) - ms_gyr_j(t)|
-#   m_gyr_j  = actual physical gyroscope measurement (roll/pitch/yaw rate)
-#   ms_gyr_j = software-sensor prediction = model angular-rate state [p q r]
-# Dataset approximation:  ms_gyr = model states Y[:,9:12]. The dataset has no
-# separate raw-gyro channel distinct from the model rate state, so the clean
-# physical measurement m_gyr is approximated by the same model-state rate on
-# clean data (=> clean residual ~ 0), and is corrupted during the attack window.
-# STL below uses the INSTANTANEOUS error |m - ms| (guide-based simplification of
-# the paper's accumulated residual r <- r + |m - ms|).
-gyr_x_predicted = Y[:, GYR_X_COL].astype(float)    # ms_gyr_x = p / roll rate
-gyr_y_predicted = Y[:, GYR_Y_COL].astype(float)    # ms_gyr_y = q / pitch rate
-gyr_z_predicted = Y[:, GYR_Z_COL].astype(float)    # ms_gyr_z = r / yaw rate
-ms_gyr_x, ms_gyr_y, ms_gyr_z = gyr_x_predicted, gyr_y_predicted, gyr_z_predicted
+# ── 5. Extract gyroscope channels ───────────────────────────────────────────
+gyr_x_predicted = Y[:, GYR_X_COL].astype(float)    # p / roll rate
+gyr_y_predicted = Y[:, GYR_Y_COL].astype(float)    # q / pitch rate
+gyr_z_predicted = Y[:, GYR_Z_COL].astype(float)    # r / yaw rate
 
-m_gyr_x_clean = ms_gyr_x.copy()                    # clean physical measurement
-m_gyr_y_clean = ms_gyr_y.copy()
-m_gyr_z_clean = ms_gyr_z.copy()
-gyr_x_measured_clean = m_gyr_x_clean               # aliases kept for downstream
-gyr_y_measured_clean = m_gyr_y_clean
-gyr_z_measured_clean = m_gyr_z_clean
+gyr_x_measured_clean = gyr_x_predicted.copy()
+gyr_y_measured_clean = gyr_y_predicted.copy()
+gyr_z_measured_clean = gyr_z_predicted.copy()
 
 
-# ── 6. Offline attack simulation ONLY: corrupt physical measurement m_gyr_x ───
-# The attacked variable only models a compromised gyroscope corrupting m_gyr_x(t)
-# during the attack window; it is not a theoretical residual variable.
-m_gyr_x = m_gyr_x_clean.copy()
-m_gyr_y = m_gyr_y_clean.copy()
-m_gyr_z = m_gyr_z_clean.copy()
-m_gyr_x[ATTACK_START:ATTACK_END] = GYR_X_ATTACK_VALUE   # roll-rate spoof ~0.8 rad/s
-gyr_x_measured_attacked = m_gyr_x                       # aliases kept for plotting
-gyr_y_measured_attacked = m_gyr_y
-gyr_z_measured_attacked = m_gyr_z
+# ── 6. Simulate gyroscope roll-rate attack ──────────────────────────────────
+gyr_x_measured_attacked = gyr_x_measured_clean.copy()
+gyr_y_measured_attacked = gyr_y_measured_clean.copy()
+gyr_z_measured_attacked = gyr_z_measured_clean.copy()
+
+# Paper gyroscope attack scenario:
+# roll-rate measurement corrupted to about 0.8 rad/s.
+gyr_x_measured_attacked[ATTACK_START:ATTACK_END] = GYR_X_ATTACK_VALUE
 
 
-# ── 7. Compute residuals  gyro_error_j = |m_gyr_j - ms_gyr_j| ─────────────────
-gyro_residual_x_clean = np.abs(m_gyr_x_clean - ms_gyr_x)
-gyro_residual_y_clean = np.abs(m_gyr_y_clean - ms_gyr_y)
-gyro_residual_z_clean = np.abs(m_gyr_z_clean - ms_gyr_z)
+# ── 7. Compute guide residuals ──────────────────────────────────────────────
+gyro_residual_x_clean = np.abs(gyr_x_measured_clean - gyr_x_predicted)
+gyro_residual_y_clean = np.abs(gyr_y_measured_clean - gyr_y_predicted)
+gyro_residual_z_clean = np.abs(gyr_z_measured_clean - gyr_z_predicted)
 
-gyro_residual_x_attacked = np.abs(m_gyr_x - ms_gyr_x)
-gyro_residual_y_attacked = np.abs(m_gyr_y - ms_gyr_y)
-gyro_residual_z_attacked = np.abs(m_gyr_z - ms_gyr_z)
+gyro_residual_x_attacked = np.abs(gyr_x_measured_attacked - gyr_x_predicted)
+gyro_residual_y_attacked = np.abs(gyr_y_measured_attacked - gyr_y_predicted)
+gyro_residual_z_attacked = np.abs(gyr_z_measured_attacked - gyr_z_predicted)
 
 
 # ── 8. Define STL spec ──────────────────────────────────────────────────────

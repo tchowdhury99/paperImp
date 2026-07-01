@@ -99,35 +99,20 @@ meters_per_deg_lng = 111320.0 * np.cos(np.deg2rad(lat0))
 GPS_North = (gps_lat - lat0) * meters_per_deg_lat
 GPS_East = (gps_lng - lng0) * meters_per_deg_lng
 
-# ── Paper-aligned residual definition (Choi et al., Algorithm 1) ─────────────
-# Theoretical residual:  gps_*_error(t) = |m_gps_*(t) - ms_gps_*(t)|
-#   m_gps_north / m_gps_east  = actual physical GPS position measurements
-#   ms_gps_north / ms_gps_east = software-sensor / model position predictions
-# Dataset approximation:  m_gps_* = GPS position from GPS_Lat/Lng converted to
-# local meters ;  ms_gps_* = model states pN/pE aligned to the same origin.
-# STL below uses the INSTANTANEOUS error |m - ms| (guide-based simplification of
-# the paper's accumulated residual r <- r + |m - ms|).
-ms_gps_north = pN_model - pN_model[0]      # software-sensor prediction (north)
-ms_gps_east  = pE_model - pE_model[0]      # software-sensor prediction (east)
-# kept aliases for existing downstream references
-pN_model_local = ms_gps_north
-pE_model_local = ms_gps_east
+# Align model pN/pE to the same local origin.
+pN_model_local = pN_model - pN_model[0]
+pE_model_local = pE_model - pE_model[0]
 
-m_gps_north_clean = GPS_North              # clean physical measurement (north)
-m_gps_east_clean  = GPS_East               # clean physical measurement (east)
+gps_north_res = np.abs(GPS_North - pN_model_local)
+gps_east_res = np.abs(GPS_East - pE_model_local)
 
-gps_north_res = np.abs(m_gps_north_clean - ms_gps_north)
-gps_east_res  = np.abs(m_gps_east_clean  - ms_gps_east)
+# Simulated GPS position attack following the paper GPS case idea:
+# corrupt longitude / east-position information by a position offset.
+GPS_East_attacked = GPS_East.copy()
+GPS_East_attacked[ATTACK_START:ATTACK_END] += GPS_EAST_ATTACK_OFFSET_M
 
-# ── Offline attack simulation ONLY: corrupt the physical measurement m_gps_east ─
-# The attacked variable only models a compromised GPS that corrupts m_gps_east(t)
-# during the attack window; it is not a theoretical residual variable.
-m_gps_east = m_gps_east_clean.copy()
-m_gps_east[ATTACK_START:ATTACK_END] += GPS_EAST_ATTACK_OFFSET_M
-GPS_East_attacked = m_gps_east             # alias kept for plotting label below
-
-gps_north_res_attacked = gps_north_res.copy()             # north not attacked
-gps_east_res_attacked = np.abs(m_gps_east - ms_gps_east)  # |m - ms| with attack
+gps_north_res_attacked = gps_north_res.copy()
+gps_east_res_attacked = np.abs(GPS_East_attacked - pE_model_local)
 
 # Time axis
 t_sec = np.arange(N) * Ts

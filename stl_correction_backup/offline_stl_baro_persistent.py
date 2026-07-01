@@ -62,19 +62,12 @@ def main():
     n = len(alt)
     t = np.arange(n) * TS
 
-    # Paper-aligned residual (Choi et al., Algorithm 1): |m_baro - ms_baro|
-    #   m_baro  = physical barometer measurement (dataset: BARO_Alt)
-    #   ms_baro = software-sensor / model prediction (dataset: alt)
-    # STL below uses the INSTANTANEOUS error |m - ms| (guide-based simplification
-    # of the paper's accumulated residual r <- r + |m - ms|).
-    ms_baro = alt
+    baro_alt_attacked = np.array(baro_alt, copy=True)
+    baro_alt_attacked[ATTACK_START:ATTACK_END] = (
+        baro_alt_attacked[ATTACK_START:ATTACK_END] + BARO_ATTACK_OFFSET
+    )
 
-    # Offline attack simulation ONLY: corrupt the physical measurement m_baro.
-    m_baro = np.array(baro_alt, copy=True)
-    m_baro[ATTACK_START:ATTACK_END] += BARO_ATTACK_OFFSET
-    baro_alt_attacked = m_baro   # alias kept for downstream references
-
-    baro_residual = np.abs(m_baro - ms_baro)
+    baro_residual = np.abs(baro_alt_attacked - alt)
 
     spec = make_discrete_time_spec()
     spec.name = "Persistent Barometer Attack Pattern"

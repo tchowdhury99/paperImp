@@ -162,35 +162,21 @@ def main():
     BARO_Alt = EXTR[:, 1].astype(float)
     GyrX_clean = Y[:, 9].astype(float)
 
-    # Paper-aligned residuals (Choi et al., Algorithm 1): |m_sensor - ms_sensor|
-    #   m_baro  = physical barometer measurement (dataset: BARO_Alt)
-    #   ms_baro = software-sensor / model prediction (dataset: alt)
-    #   m_gyr_x = physical roll-rate measurement (dataset: Y[:,9])
-    #   ms_gyr_x = software-sensor prediction = model roll-rate state (paper §6.2)
-    # STL below uses INSTANTANEOUS error |m - ms| (guide-based simplification of
-    # the paper's accumulated residual r <- r + |m - ms|).
-    ms_baro  = alt
-    ms_gyr_x = GyrX_clean.copy()          # model angular-rate state = ms_gyr_x
-    GyrX_predicted = ms_gyr_x             # alias kept for downstream references
+    GyrX_predicted = GyrX_clean.copy()
 
-    m_baro_clean  = BARO_Alt
-    m_gyr_x_clean = GyrX_clean
+    BARO_Alt_attacked = BARO_Alt.copy()
+    BARO_Alt_attacked[ATTACK_START:ATTACK_END] = (
+        BARO_Alt_attacked[ATTACK_START:ATTACK_END] + BARO_ATTACK_OFFSET_M
+    )
 
-    # ── Offline attack simulation ONLY: corrupt the physical measurements ──────
-    m_baro = m_baro_clean.copy()
-    m_baro[ATTACK_START:ATTACK_END] += BARO_ATTACK_OFFSET_M
-    BARO_Alt_attacked = m_baro           # alias kept for downstream references
+    GyrX_attacked = GyrX_clean.copy()
+    GyrX_attacked[ATTACK_START:ATTACK_END] = GYRX_ATTACK_VALUE_RAD_S
 
-    m_gyr_x = m_gyr_x_clean.copy()
-    m_gyr_x[ATTACK_START:ATTACK_END] = GYRX_ATTACK_VALUE_RAD_S
-    GyrX_attacked = m_gyr_x              # alias kept for downstream references
+    baro_residual_clean = np.abs(BARO_Alt - alt)
+    baro_residual_attacked = np.abs(BARO_Alt_attacked - alt)
 
-    # Residuals: |m_sensor - ms_sensor|
-    baro_residual_clean = np.abs(m_baro_clean - ms_baro)
-    baro_residual_attacked = np.abs(m_baro - ms_baro)
-
-    gyro_residual_x_clean = np.abs(m_gyr_x_clean - ms_gyr_x)
-    gyro_residual_x_attacked = np.abs(m_gyr_x - ms_gyr_x)
+    gyro_residual_x_clean = np.abs(GyrX_clean - GyrX_predicted)
+    gyro_residual_x_attacked = np.abs(GyrX_attacked - GyrX_predicted)
 
     t_sec = np.arange(N) * Ts
     t_ms = (np.arange(N) * int(round(Ts * 1000))).astype(int)

@@ -90,55 +90,39 @@ gyro_z_measured = Y[:, 11].copy()
 
 
 # ============================================================
-# Paper-aligned m_sensor / ms_sensor (Choi et al., Algorithm 1)
-#   residual_sensor(t) = |m_sensor(t) - ms_sensor(t)|
-#   m_sensor  = actual physical measurement received by the monitor
-#   ms_sensor = software-sensor / model prediction
-# Dataset approximation:
-#   ms_baro = alt ;  ms_gps_* = model_* ;  ms_gyr_* = model gyro state
-#   m_baro  = baro_alt ; m_gps_* = gps_* ; m_gyr_* = gyro_*_measured
-# STL below uses INSTANTANEOUS error |m - ms| (guide-based simplification of the
-# paper's accumulated residual r <- r + |m - ms|).
+# Apply compound attacks using the same completed definitions
 # ============================================================
-ms_baro       = alt
-ms_gps_north  = model_north
-ms_gps_east   = model_east
-ms_gyr_x, ms_gyr_y, ms_gyr_z = gyro_x_model, gyro_y_model, gyro_z_model
 
-# m_sensor = physical measurements; attack simulation corrupts them in the window
-m_baro       = baro_alt.copy()
-m_gps_north  = gps_north.copy()
-m_gps_east   = gps_east.copy()
-m_gyr_x      = gyro_x_measured.copy()
-m_gyr_y      = gyro_y_measured.copy()
-m_gyr_z      = gyro_z_measured.copy()
+baro_alt_attacked = baro_alt.copy()
+gps_north_attacked = gps_north.copy()
+gps_east_attacked = gps_east.copy()
+gyro_x_measured_attacked = gyro_x_measured.copy()
+gyro_y_measured_attacked = gyro_y_measured.copy()
+gyro_z_measured_attacked = gyro_z_measured.copy()
 
-# ── Offline attack simulation ONLY: corrupt the physical measurements m_sensor ─
-m_baro[ATTACK_START:ATTACK_END]    += BARO_ATTACK_OFFSET
-m_gps_east[ATTACK_START:ATTACK_END] += GPS_EAST_ATTACK_OFFSET
-m_gyr_x[ATTACK_START:ATTACK_END]    = GYRO_X_ATTACK_VALUE
+baro_alt_attacked[ATTACK_START:ATTACK_END] = (
+    baro_alt_attacked[ATTACK_START:ATTACK_END] + BARO_ATTACK_OFFSET
+)
 
-# aliases kept for any downstream plotting references
-baro_alt_attacked = m_baro
-gps_north_attacked = m_gps_north
-gps_east_attacked = m_gps_east
-gyro_x_measured_attacked = m_gyr_x
-gyro_y_measured_attacked = m_gyr_y
-gyro_z_measured_attacked = m_gyr_z
+gps_east_attacked[ATTACK_START:ATTACK_END] = (
+    gps_east_attacked[ATTACK_START:ATTACK_END] + GPS_EAST_ATTACK_OFFSET
+)
+
+gyro_x_measured_attacked[ATTACK_START:ATTACK_END] = GYRO_X_ATTACK_VALUE
 
 
 # ============================================================
-# Residuals:  residual_sensor = |m_sensor - ms_sensor|
+# Residuals from the completed STL steps
 # ============================================================
 
-baro_residual = np.abs(m_baro - ms_baro)
+baro_residual = np.abs(baro_alt_attacked - alt)
 
-gps_north_residual = np.abs(m_gps_north - ms_gps_north)
-gps_east_residual = np.abs(m_gps_east - ms_gps_east)
+gps_north_residual = np.abs(gps_north_attacked - model_north)
+gps_east_residual = np.abs(gps_east_attacked - model_east)
 
-gyro_residual_x = np.abs(m_gyr_x - ms_gyr_x)
-gyro_residual_y = np.abs(m_gyr_y - ms_gyr_y)
-gyro_residual_z = np.abs(m_gyr_z - ms_gyr_z)
+gyro_residual_x = np.abs(gyro_x_measured_attacked - gyro_x_model)
+gyro_residual_y = np.abs(gyro_y_measured_attacked - gyro_y_model)
+gyro_residual_z = np.abs(gyro_z_measured_attacked - gyro_z_model)
 
 
 # ============================================================

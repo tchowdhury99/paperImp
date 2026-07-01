@@ -34,33 +34,18 @@ N = Y.shape[0]
 alt      = Y[:, 2]      # altitude AGL, model state
 baro_alt = EXTR[:, 1]   # BARO_Alt, measured barometer altitude AGL
 
-# ── Paper-aligned residual definition (Choi et al., Algorithm 1) ─────────────
-# Theoretical residual:   baro_error(t) = |m_baro(t) - ms_baro(t)|
-#   m_baro  = actual physical barometer measurement received by the monitor
-#   ms_baro = software-sensor / model barometer prediction
-# Dataset approximation:  m_baro = BARO_Alt ,  ms_baro = alt (model state)
-# NOTE: the STL formula below uses the INSTANTANEOUS error |m - ms| as required
-# by the STL implementation guide (a guide-based simplification of the paper's
-# accumulated residual r <- r + |m - ms|).
-ms_baro      = alt                    # software-sensor prediction  ms_baro(t)
-m_baro_clean = baro_alt               # clean physical measurement  m_baro(t)
+# Residual: model altitude vs barometer altitude
+baro_res = np.abs(alt - baro_alt)
 
-# baro_res here = clean instantaneous error |m_baro - ms_baro|
-baro_res = np.abs(m_baro_clean - ms_baro)
-
-# ── 2. Offline attack simulation ONLY: corrupt the physical measurement m_baro ─
-# The attacked variable is not a theoretical residual variable; it only models a
-# compromised barometer that corrupts m_baro(t) during the attack window.
-m_baro = m_baro_clean.copy()
+# ── 2. Simulate barometer attack exactly as guide ────────────────────────────
+baro_attacked = baro_alt.copy()
 
 attack_start = 2000     # sample index = 40 s at 50 Hz
 attack_end   = 2500     # sample index = 50 s at 50 Hz
 
-m_baro[attack_start:attack_end] += 3.0     # +3.0 m barometer spoof during attack window
-baro_attacked = m_baro                     # alias kept for plotting label below
+baro_attacked[attack_start:attack_end] += 3.0
 
-# baro_res_attacked = instantaneous error |m_baro - ms_baro| with attack applied
-baro_res_attacked = np.abs(m_baro - ms_baro)
+baro_res_attacked = np.abs(alt - baro_attacked)
 
 # ── 3. Time axis ─────────────────────────────────────────────────────────────
 t_sec = np.arange(N) * Ts
