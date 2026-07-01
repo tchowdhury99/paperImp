@@ -10,9 +10,11 @@
 | Altitude upper bound | $h_{\max} = 29.70\ \text{m}$ | Altitude must stay below 29.70 m |
 
 ## Formula 1 — Barometer Integrity
+###
 Script: offline_stl_baro.py
 Plot:   stl_result_baro.png
 Formula:
+
 $$
 G_{[0,2000\text{ms}]}(\text{baro\_res} < 0.30)
 $$
