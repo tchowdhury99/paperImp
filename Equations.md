@@ -360,4 +360,63 @@ $$e_{\mathrm{baro}}>0.30 \rightarrow F_{[0,10000\,\mathrm{ms}]}\left(e_{\mathrm{
 Monitor this rule globally over 580 ms:
 
 $$G_{[0,580\,\mathrm{ms}]}\left(e_{\mathrm{baro}}>0.30 \rightarrow F_{[0,10000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)\right)$$
+## Formula 8 — Altitude Bounds / Mission Spec S3-S4 Equivalent
+
+**Script:** `offline_stl_altitude_bounds.py`  
+**Plot:** `stl_result_altitude_bounds.png`
+
+### Formula
+
+$$G_{[0,580\,\mathrm{ms}]}\left(h>0.97 \land h<29.70\right)$$
+
+### Purpose
+
+This checks whether altitude remains within the guide-defined mission bounds.
+
+### Example 1 — Safe Altitude
+
+Suppose:
+
+$$h=10.0\,\mathrm{m}$$
+
+Then:
+
+$$10.0>0.97$$
+
+$$10.0<29.70$$
+
+So the formula is satisfied.
+
+Robustness for the lower bound:
+
+$$\rho_{\mathrm{lower}}=h-0.97=10.0-0.97=9.03$$
+
+Robustness for the upper bound:
+
+$$\rho_{\mathrm{upper}}=29.70-h=29.70-10.0=19.70$$
+
+For the AND operator:
+
+$$\rho_{\mathrm{total}}=\min(9.03,19.70)$$
+
+$$\rho_{\mathrm{total}}=9.03$$
+
+Positive robustness means the altitude formula is satisfied.
+
+### Example 2 — Unsafe Altitude
+
+Suppose:
+
+$$h=30.0\,\mathrm{m}$$
+
+Then the upper-bound condition is false:
+
+$$30.0<29.70$$
+
+Upper-bound robustness:
+
+$$\rho_{\mathrm{upper}}=29.70-30.0=-0.30$$
+
+So the altitude formula is violated.
+
 
