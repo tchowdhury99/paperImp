@@ -91,16 +91,16 @@ So STL reports an attack/violation.
 $$
 G_{[0,580\,\mathrm{ms}]}
 \left(
-\mathrm{gps\_north\_res} < 0.169349
-\;\land\;
-\mathrm{gps\_east\_res} < 0.169349
+e_{\mathrm{GPS,N}} < 0.169349
+\land
+e_{\mathrm{GPS,E}} < 0.169349
 \right)
 $$
 
 ### Threshold
 
 $$
-\varepsilon_{\mathrm{gps}} = 0.169349
+\varepsilon_{\mathrm{GPS}} = 0.169349
 $$
 
 ### Formula Formation
@@ -108,13 +108,13 @@ $$
 Start with GPS north safety:
 
 $$
-\mathrm{gps\_north\_error}(t) < \varepsilon_{\mathrm{gps}}
+e_{\mathrm{GPS,N}}(t) < \varepsilon_{\mathrm{GPS}}
 $$
 
 Substitute the threshold:
 
 $$
-\mathrm{gps\_north\_error}(t) < 0.169349
+e_{\mathrm{GPS,N}}(t) < 0.169349
 $$
 
 For both GPS north and GPS east residuals, the STL formula becomes:
@@ -122,9 +122,9 @@ For both GPS north and GPS east residuals, the STL formula becomes:
 $$
 G_{[0,580\,\mathrm{ms}]}
 \left(
-\mathrm{gps\_north\_res} < 0.169349
-\;\land\;
-\mathrm{gps\_east\_res} < 0.169349
+e_{\mathrm{GPS,N}} < 0.169349
+\land
+e_{\mathrm{GPS,E}} < 0.169349
 \right)
 $$
 
@@ -133,11 +133,11 @@ $$
 Suppose:
 
 $$
-\mathrm{gps\_north\_error} = 0.05
+e_{\mathrm{GPS,N}} = 0.05
 $$
 
 $$
-\mathrm{gps\_east\_error} = 0.08
+e_{\mathrm{GPS,E}} = 0.08
 $$
 
 Both are below the threshold:
@@ -155,11 +155,11 @@ So the GPS formula is satisfied.
 Now suppose:
 
 $$
-\mathrm{gps\_north\_error} = 0.20
+e_{\mathrm{GPS,N}} = 0.20
 $$
 
 $$
-\mathrm{gps\_east\_error} = 0.08
+e_{\mathrm{GPS,E}} = 0.08
 $$
 
 North violates the threshold:
@@ -171,21 +171,21 @@ $$
 Robustness for north:
 
 $$
-\rho_{\mathrm{north}} = 0.169349 - 0.20
+\rho_{\mathrm{N}} = 0.169349 - 0.20
 $$
 
 $$
-\rho_{\mathrm{north}} = -0.030651
+\rho_{\mathrm{N}} = -0.030651
 $$
 
 East is safe:
 
 $$
-\rho_{\mathrm{east}} = 0.169349 - 0.08
+\rho_{\mathrm{E}} = 0.169349 - 0.08
 $$
 
 $$
-\rho_{\mathrm{east}} = +0.089349
+\rho_{\mathrm{E}} = +0.089349
 $$
 
 For the AND operator, STL uses the weaker condition:
@@ -195,8 +195,8 @@ $$
 =
 \min
 \left(
-\rho_{\mathrm{north}},
-\rho_{\mathrm{east}}
+\rho_{\mathrm{N}},
+\rho_{\mathrm{E}}
 \right)
 $$
 
