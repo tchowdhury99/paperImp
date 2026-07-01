@@ -213,4 +213,3 @@ $$
 $$
 
 So the full GPS formula is violated.
-
