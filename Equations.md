@@ -296,3 +296,12 @@ $$\rho_{\mathrm{total}}=\min(-0.60,+0.13,+0.14)$$
 $$\rho_{\mathrm{total}}=-0.60$$
 
 So the gyroscope formula is violated because the X-axis is attacked.
+
+## Formula 4 — Multi-Sensor Compound Spec
+
+**Script:** `offline_stl_multi_sensor.py`  
+**Plot:** `stl_result_multi_sensor.png`
+
+### Formula
+
+$$G_{[0,580\,\mathrm{ms}]}\left(h>0.97 \land h<29.70 \land e_{\mathrm{baro}}<0.30 \land e_{\mathrm{GPS,N}}<0.169349 \land e_{\mathrm{GPS,E}}<0.169349 \land e_{\mathrm{gyr},x}<0.15 \land e_{\mathrm{gyr},y}<0.15 \land e_{\mathrm{gyr},z}<0.15\right)$$
