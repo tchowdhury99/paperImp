@@ -4,3 +4,5 @@ rv_recovery/data/operation_data.mat
 ardupilot_ws/arducopter-3.4/copter346_test/logs/
 *.tlog
 *.tlog.raw
+__pycache__/
+*.pyc
