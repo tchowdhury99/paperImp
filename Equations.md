@@ -322,3 +322,42 @@ This detects whether the barometer residual remains safe over a longer temporal 
 ### Full Formula
 
 $$G_{[0,580\,\mathrm{ms}]}\left(G_{[0,1000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)\right)$$
+## Formula 6 — Barometer Recovery Within 10 s
+
+**Script:** `offline_stl_baro_recovery.py`  
+**Plot:** `stl_result_baro_recovery.png`
+
+### Formula
+
+$$G_{[0,580\,\mathrm{ms}]}\left(e_{\mathrm{baro}}>0.30 \rightarrow F_{[0,10000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)\right)$$
+
+### Purpose
+
+This checks whether a barometer attack is followed by recovery within 10 seconds.
+
+### Formula Formation
+
+Attack condition:
+
+$$e_{\mathrm{baro}}>0.30$$
+
+This means the barometer residual is above the safe threshold.
+
+Recovery condition:
+
+$$e_{\mathrm{baro}}<0.30$$
+
+This means the barometer residual has returned to the safe range.
+
+Recovery within 10 seconds:
+
+$$F_{[0,10000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)$$
+
+Attack implies recovery:
+
+$$e_{\mathrm{baro}}>0.30 \rightarrow F_{[0,10000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)$$
+
+Monitor this rule globally over 580 ms:
+
+$$G_{[0,580\,\mathrm{ms}]}\left(e_{\mathrm{baro}}>0.30 \rightarrow F_{[0,10000\,\mathrm{ms}]}\left(e_{\mathrm{baro}}<0.30\right)\right)$$
+
