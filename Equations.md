@@ -17,7 +17,7 @@
 ### Formula
 
 $$
-G_{[0,2000\,\mathrm{ms}]}\left(\mathrm{baro\_res} < 0.30\right)
+G_{[0,2000\mathrm{ms}]}\left(\mathrm{baro\_res} < 0.30\right)
 $$
 
 
