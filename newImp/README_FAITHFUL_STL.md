@@ -35,7 +35,7 @@ formal monitor over that statistic.
 | Low-pass filter `m ← filter(m)` | `faithful_core.LPF` (butter(2, 5/(50/2))) |
 | Per-window checkpoint re-seed + error term `e` | same functions (Algorithm 1 checkpoint) |
 | **Accumulated residual** `r ← r + |m−ms|`, windowed `R_{k,N}` (§3.3) | `faithful_core.sliding_R` / running sum in the monitors |
-| Detection rule `r > T_on` | **STL** `G(R < T_on)` → `ρ<0` | ✅ (STL = the rule) |
+| Detection rule `r > T_on` | **STL** `G(R < T_on)` → `ρ<0` | 
 | Threshold `T_on = e_max + margin`, `T_off < T_on` (§3.3) | `faithful_core.select_thresholds` (margin 10%, T_off=0.8·T_on) |
 | Window `N` via DTW | reused from `../rv_recovery/data/recovery_params.npy` (DTW-derived) |
 | Recovery FSM `m←ms`, back after `K` safe (Algorithm 1) | `run_monitor` / `FaithfulMonitor` (K=10) |
