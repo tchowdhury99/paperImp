@@ -2,8 +2,7 @@
 
 **Source report:** `README_FAITHFUL_STL.md`  
 **Project location described in source:** `/home/tchowdh4/paperImp/newImp/`  
-**Topic:** Paper-faithful STL attack detection for Choi et al., *Software-based Realtime Recovery from Sensor Attacks on Robotic Vehicles*  
-**Purpose of this explanation:** Explain every part of the report, how each formula was formed, how each threshold was obtained, why each value was used, and how to interpret the results with examples.
+
 
 ---
 
@@ -15,7 +14,7 @@ The report describes a newer implementation under:
 /home/tchowdh4/paperImp/newImp/
 ```
 
-This implementation is called **paper-faithful** because it tries to follow the Choi et al. paper's actual runtime detection logic instead of only using a simplified STL residual threshold.
+
 
 The key difference is this:
 
